@@ -1,5 +1,6 @@
 import { View, Text, TextInput, Pressable, StyleSheet, Image, KeyboardAvoidingView, ScrollView, Platform, } from "react-native";
 import { useRouter } from "expo-router";
+import { replace } from "expo-router/build/global-state/routing";
 
 export default function Login() {
     const router = useRouter();
@@ -37,7 +38,7 @@ export default function Login() {
                         secureTextEntry
                     />
 
-                    <Pressable style={styles.button}>
+                    <Pressable style={styles.button} onPress={()=> replace('/first_login')}>
                         <Text style={styles.buttonText}>Log in</Text>
                     </Pressable>
 
