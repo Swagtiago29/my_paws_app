@@ -49,7 +49,7 @@ export default function Login() {
                         }}
                     />
 
-                    <Pressable onPress={() => router.push('/signup')}>
+                    <Pressable onPress={() => router.replace('/signup')}>
                         <Text style={styles.link}>Create an account</Text>
                     </Pressable>
                     <View style={styles.bottomContainer}>

@@ -56,7 +56,7 @@ export default function SignUp() {
                         }}
                     />
 
-                    <Pressable onPress={() => router.push("/login")}>
+                    <Pressable onPress={() => router.replace("/login")}>
                         <Text style={styles.link}>
                             Already have an account?
                         </Text>
