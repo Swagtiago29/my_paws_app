@@ -5,7 +5,7 @@ import useSignUp from "../hooks/useSignUp";
 
 export default function SignUp() {
     const router = useRouter();
-    const {affiliated, clinic, handleAffiliatedChange, handleClinicChange} = useSignUp();
+    const { affiliated, clinic, handleAffiliatedChange, handleClinicChange } = useSignUp();
 
     return (
         <KeyboardAvoidingView
@@ -60,7 +60,7 @@ export default function SignUp() {
                         </View>
                     }
 
-                    <Pressable style={styles.button}>
+                    <Pressable style={styles.button} onPress={() => router.navigate('/')}>
                         <Text style={styles.buttonText}>Continue</Text>
                     </Pressable>
 
