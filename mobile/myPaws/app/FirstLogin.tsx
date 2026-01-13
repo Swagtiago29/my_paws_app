@@ -1,9 +1,11 @@
-import { View, Text, TextInput, Pressable, StyleSheet, Image, KeyboardAvoidingView, ScrollView, Platform, } from "react-native";
+import { View, Text, Pressable, StyleSheet, Image, KeyboardAvoidingView, ScrollView, Platform, } from "react-native";
 import { useRouter } from "expo-router";
-import { replace } from "expo-router/build/global-state/routing";
+import { Picker } from '@react-native-picker/picker';
+import useSignUp from "../hooks/useSignUp";
 
-export default function Login() {
+export default function FirstLogIn() {
     const router = useRouter();
+    const { affiliated, clinic, handleAffiliatedChange, handleClinicChange } = useSignUp();
 
     return (
         <KeyboardAvoidingView
@@ -20,39 +22,48 @@ export default function Login() {
                         source={require("../assets/images/paws_logo.png")}
                         style={{ width: 150, height: 150, alignSelf: 'center' }}
                     />
+
                     <Text style={styles.title}>
                         MY PAWS
                     </Text>
-                    <TextInput
-                        placeholder="Email"
-                        placeholderTextColor="#999"
-                        style={styles.input}
-                        autoCapitalize="none"
-                        keyboardType="email-address"
-                    />
 
-                    <TextInput
-                        placeholder="Password"
-                        placeholderTextColor="#999"
-                        style={styles.input}
-                        secureTextEntry
-                    />
+                    <View style={styles.pickerContainer}>
+                        <Text style={{ fontSize: 16 }}>Are you afiliated to a Veterinary Clinic?</Text>
+                        <Picker
+                            selectedValue={affiliated}
+                            mode="dropdown"
+                            onValueChange={handleAffiliatedChange}
+                            style={{ height: 50, width: 100 }}
+                        >
+                            <Picker.Item label="No" value="No" />
+                            <Picker.Item label="Yes" value="Yes" />
+                        </Picker>
+                    </View>
 
-                    <Pressable style={styles.button} onPress={()=> replace('/first_login')}>
-                        <Text style={styles.buttonText}>Log in</Text>
+                    {affiliated === 'Yes' &&
+                        <View style={styles.pickerContainer}>
+                            <Text style={{ fontSize: 16 }}>Which Clinic are you affiliated to?</Text>
+                            <Picker
+                                selectedValue={clinic}
+                                mode="dropdown"
+                                onValueChange={handleClinicChange}
+                                style={{ height: 50, width: 200 }}
+                            >
+                                <Picker.Item label="Example Clinic 1" value="Example Clinic 1" />
+                                <Picker.Item label="Example Clinic 2" value="Example Clinic 2" />
+                                <Picker.Item label="Example Clinic 3" value="Example Clinic 3" />
+                                <Picker.Item label="Example Clinic 4" value="Example Clinic 4" />
+                                <Picker.Item label="Example Clinic 5" value="Example Clinic 5" />
+                                <Picker.Item label="Example Clinic 6" value="Example Clinic 6" />
+
+                            </Picker>
+                        </View>
+                    }
+
+                    <Pressable style={styles.button} onPress={() => router.navigate('/')}>
+                        <Text style={styles.buttonText}>Continue</Text>
                     </Pressable>
 
-                    <View
-                        style={{
-                            height: 1,
-                            backgroundColor: "#e5e7eb",
-                            marginVertical: 16,
-                        }}
-                    />
-
-                    <Pressable onPress={() => router.replace('/signup')}>
-                        <Text style={styles.link}>Create an account</Text>
-                    </Pressable>
                     <View style={styles.bottomContainer}>
                         <Pressable onPress={() => console.log('policy')}>
                             <Text style={styles.bottomLinks}>
@@ -82,6 +93,12 @@ const styles = StyleSheet.create({
         backgroundColor: "white",
         justifyContent: "center",
         padding: 24,
+    },
+    pickerContainer: {
+        flex: 1,
+        backgroundColor: "white",
+        justifyContent: "flex-start",
+        alignItems: 'center'
     },
     title: {
         fontSize: 35,
