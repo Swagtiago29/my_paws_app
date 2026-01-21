@@ -1,7 +1,7 @@
 import { View, Text, Pressable, StyleSheet, Image, KeyboardAvoidingView, ScrollView, Platform, } from "react-native";
 import { useRouter } from "expo-router";
 import { Picker } from '@react-native-picker/picker';
-import useSignUp from "../hooks/useSignUp";
+import useSignUp from "../../hooks/useSignUp";
 
 export default function FirstLogIn() {
     const router = useRouter();
@@ -19,7 +19,7 @@ export default function FirstLogIn() {
                 <View style={styles.container}>
 
                     <Image
-                        source={require("../assets/images/paws_logo.png")}
+                        source={require("../../assets/images/paws_logo.png")}
                         style={{ width: 150, height: 150, alignSelf: 'center' }}
                     />
 
@@ -60,22 +60,22 @@ export default function FirstLogIn() {
                         </View>
                     }
 
-                    <Pressable style={styles.button} onPress={() => router.navigate('/')}>
+                    <Pressable style={styles.button} onPress={() => router.replace('/(tabs)/home')}>
                         <Text style={styles.buttonText}>Continue</Text>
                     </Pressable>
 
                     <View style={styles.bottomContainer}>
-                        <Pressable onPress={() => console.log('policy')}>
+                        <Pressable onPress={() => router.push('/BottomInfo')}>
                             <Text style={styles.bottomLinks}>
                                 PRIVACY POLICY
                             </Text>
                         </Pressable>
-                        <Pressable onPress={() => console.log('join')}>
+                        <Pressable onPress={() => router.push('/BottomInfo')}>
                             <Text style={styles.bottomLinks}>
                                 JOIN US
                             </Text>
                         </Pressable>
-                        <Pressable onPress={() => console.log('info')}>
+                        <Pressable onPress={() => router.push('/BottomInfo')}>
                             <Text style={styles.bottomLinks}>
                                 INFORMATION
                             </Text>
@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
     },
     bottomLinks: {
         color: '#58963E',
-        marginBottom: 10,
+        marginBottom: 30,
         textDecorationLine: "underline"
     }
 });

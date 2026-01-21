@@ -3,7 +3,7 @@ import { View } from "react-native"
 
 export default function BottomInfo() {
     return (
-        <View>
+        <View style={{display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: 50}}>
             <Text>
                 <Text>Privacy Policy</Text>
             </Text>

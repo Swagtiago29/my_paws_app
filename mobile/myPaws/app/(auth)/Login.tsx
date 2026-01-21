@@ -1,7 +1,8 @@
 import { View, Text, TextInput, Pressable, StyleSheet, Image, KeyboardAvoidingView, ScrollView, Platform, } from "react-native";
 import { useRouter } from "expo-router";
+import { replace } from "expo-router/build/global-state/routing";
 
-export default function SignUp() {
+export default function Login() {
     const router = useRouter();
 
     return (
@@ -16,7 +17,7 @@ export default function SignUp() {
                 <View style={styles.container}>
 
                     <Image
-                        source={require("../assets/images/paws_logo.png")}
+                        source={require("../../assets/images/paws_logo.png")}
                         style={{ width: 150, height: 150, alignSelf: 'center' }}
                     />
                     <Text style={styles.title}>
@@ -37,43 +38,33 @@ export default function SignUp() {
                         secureTextEntry
                     />
 
-                    <TextInput
-                        placeholder="Confirm Password"
-                        placeholderTextColor="#999"
-                        style={styles.input}
-                        secureTextEntry
-                    />
-
-                    <Pressable style={styles.button}>
-                        <Text style={styles.buttonText}>Sign up</Text>
+                    <Pressable style={styles.button} onPress={()=> replace('/(auth)/FirstLogin')}>
+                        <Text style={styles.buttonText}>Log in</Text>
                     </Pressable>
 
                     <View
                         style={{
                             height: 1,
-                            backgroundColor: "#e5e7eb", // light gray
+                            backgroundColor: "#e5e7eb",
                             marginVertical: 16,
                         }}
                     />
 
-                    <Pressable onPress={() => router.push("/login")}>
-                        <Text style={styles.link}>
-                            Already have an account?
-                        </Text>
+                    <Pressable onPress={() => router.replace('/(auth)/SignUp')}>
+                        <Text style={styles.link}>Create an account</Text>
                     </Pressable>
-
                     <View style={styles.bottomContainer}>
-                        <Pressable onPress={() => console.log('policy')}>
+                        <Pressable onPress={() => router.push('/BottomInfo')}>
                             <Text style={styles.bottomLinks}>
                                 PRIVACY POLICY
                             </Text>
                         </Pressable>
-                        <Pressable onPress={() => console.log('join')}>
+                        <Pressable onPress={() => router.push('/BottomInfo')}>
                             <Text style={styles.bottomLinks}>
                                 JOIN US
                             </Text>
                         </Pressable>
-                        <Pressable onPress={() => console.log('info')}>
+                        <Pressable onPress={() => router.push('/BottomInfo')}>
                             <Text style={styles.bottomLinks}>
                                 INFORMATION
                             </Text>
@@ -136,7 +127,7 @@ const styles = StyleSheet.create({
     },
     bottomLinks: {
         color: '#58963E',
-        marginBottom: 10,
-        textDecorationLine: "underline"
+        marginBottom: 30,
+        textDecorationLine: "underline",
     }
 });
