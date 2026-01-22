@@ -1,9 +1,38 @@
-import { Image, View, Text } from "react-native";
+import { StyleSheet, View } from "react-native";
+import MapView, { Marker } from "react-native-maps";
 
-export default function Map() {
+export default function MapScreen() {
   return (
-    <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <Text style={{ fontSize: 18, margin: 5 }}>Search for your closest Veterynary Clinics</Text>
-      <Image source={require("../../assets/images/map_placeholder.png")} style={{ width: "95%", height: "94%", borderWidth: 3, borderColor: "#7ED957" }} />
-    </View>);
+    <View style={styles.container}>
+      <MapView
+        style={styles.map}
+        provider="google"
+        initialRegion={{
+          latitude: -34.9011,
+          longitude: -56.1645,
+          latitudeDelta: 0.05,
+          longitudeDelta: 0.05,
+        }}
+      >
+        <Marker
+          coordinate={{
+            latitude: -34.9011,
+            longitude: -56.1645,
+          }}
+          title="Montevideo"
+          description="Hello map 👋"
+        />
+      </MapView>
+    </View>
+  );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  map: {
+    width: "100%",
+    height: "100%",
+  },
+});

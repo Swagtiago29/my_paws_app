@@ -1,5 +1,10 @@
 import "dotenv/config";
 
+console.log(
+  "ANDROID MAPS KEY:",
+  process.env.EXPO_PUBLIC_GOOGLE_MAPS_ANDROID_KEY
+);
+
 export default {
   expo: {
     name: "myPaws",
