@@ -16,14 +16,8 @@ export default {
     userInterfaceStyle: "automatic",
     newArchEnabled: true,
 
-    ios: {
-      supportsTablet: true,
-      config: {
-        googleMapsApiKey: process.env.EXPO_PUBLIC_GOOGLE_MAPS_IOS_KEY,
-      },
-    },
-
     android: {
+      package: "com.mypaws.mypawsapp",
       adaptiveIcon: {
         backgroundColor: "#3C6627",
         foregroundImage: "./assets/images/android-icon-foreground.png",
