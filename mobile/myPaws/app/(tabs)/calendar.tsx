@@ -23,7 +23,7 @@ export default function MyCalendar() {
     };
 
     return (
-        <View style={{ height: "100%" }}>
+        <View style={{ height: "100%", borderColor: "black", borderTopWidth: 2, borderBottomWidth: 2 }}>
             {dayOpen && (<Pressable onPress={() => setDayOpen(false)} style={{ position: "absolute", height: "100%", width: "100%", backgroundColor: "black", zIndex: 1 }}>
                 <View>
                     <Text style={{ color: 'white' }}>
