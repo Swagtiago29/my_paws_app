@@ -24,7 +24,7 @@ export default function Login() {
                         MY PAWS
                     </Text>
                     <TextInput
-                        placeholder="Email"
+                        placeholder="Email or Client Number"
                         placeholderTextColor="#999"
                         style={styles.input}
                         autoCapitalize="none"

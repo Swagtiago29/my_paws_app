@@ -43,7 +43,7 @@ export default {
       [
         "expo-splash-screen",
         {
-          image: "./assets/images/splash-icon.png",
+          image: "./assets/images/paws_logo_empty.png",
           imageWidth: 200,
           resizeMode: "contain",
           backgroundColor: "#ffffff",

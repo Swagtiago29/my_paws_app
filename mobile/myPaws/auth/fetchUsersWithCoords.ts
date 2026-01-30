@@ -21,18 +21,16 @@ async function geocodeAddress(address: string) {
   const res = await fetch(url);
   const data = await res.json();
 
-  if (data.status !== "OK") {
-    console.warn("Geocoding failed:", address, data.status);
-    return null;
-  }
+  if (data.status !== "OK") return null;
 
-  const location = data.results[0].geometry.location;
+  const { lat, lng } = data.results[0].geometry.location;
 
   return {
-    latitude: location.lat,
-    longitude: location.lng,
+    latitude: lat,
+    longitude: lng,
   };
 }
+
 
 export async function fetchUsersWithCoords(): Promise<UserWithCoords[]> {
   const snapshot = await getDocs(collection(db, "users"));
@@ -41,34 +39,28 @@ export async function fetchUsersWithCoords(): Promise<UserWithCoords[]> {
     snapshot.docs.map(async userDoc => {
       const data = userDoc.data();
 
-      // ✅ 1. If coords already exist → use them
-      if (
-        data.coordinates?.latitude &&
-        data.coordinates?.longitude
-      ) {
+      // 1️⃣ Already has coords
+      if (data.coordinates?.latitude && data.coordinates?.longitude) {
         return {
           id: userDoc.id,
-          name: data.clinicName ?? "Unknown",
+          clinicName: data.clinicName ?? "Unknown",
           coordinates: data.coordinates,
         };
       }
 
-      // ❌ No address → skip user
+      // 2️⃣ No address
       if (!data.clinicAddress) return null;
 
-      // ✅ 2. Geocode only if missing
+      // 3️⃣ Geocode
       const coords = await geocodeAddress(data.clinicAddress);
       if (!coords) return null;
 
-      // ✅ 3. Save back to Firestore (one-time cost)
-      await updateDoc(doc(db, "users", userDoc.id), {
-        coordinates: coords,
-      });
+      // (optional) save to Firestore later
 
       return {
         id: userDoc.id,
         clinicName: data.clinicName ?? "Unknown",
-        coordinates: coords,
+        coordinates: coords, // ✅ THIS IS THE KEY FIX
       };
     })
   );

@@ -42,12 +42,9 @@ export default function MapScreen() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center'
+    flex: 1
   },
   map: {
-    width: "100%",
-    height: "100%",
+    flex: 1
   },
 });
