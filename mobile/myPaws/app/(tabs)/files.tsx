@@ -1,6 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
-import { Image, Pressable, Text, View, StyleSheet, FlatList } from "react-native";
+import { Image, Pressable, Text, View, StyleSheet } from "react-native";
 
 const PETS = [
   {
@@ -268,11 +268,16 @@ export default function Files() {
       {onRecordOpen && (
         <View style={{ backgroundColor: 'black', width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <View style={{ alignSelf: 'flex-end' }}>
-            <Pressable onPress={()=> setOnRecordOpen(null)}>
-            <Ionicons name="close" color={'#fff'} size={30} />
+            <Pressable onPress={() => setOnRecordOpen(null)}>
+              <Ionicons name="close" color={'#fff'} size={30} />
             </Pressable>
           </View>
-          <Image source={{ uri: onRecordOpen }} style={{ width: '100%', height: '100%' }} resizeMode="contain" />
+          <Image source={{ uri: onRecordOpen }} style={{ width: '100%', height: '90%'}} resizeMode="contain" />
+          <View style={{ alignSelf: 'flex-end', height: 40 }}>
+            <Pressable onPress={() => setOnRecordOpen(null)}>
+              <Image source={require('../../assets/images/download.png')} style={{height: 25, width: 25}}/>
+            </Pressable>
+          </View>
         </View>)}
       <View style={{ backgroundColor: 'white', width: '100%', height: '100%', paddingLeft: 10, paddingRight: 10, paddingBottom: 10 }}>
         {PETS.map(pet => {
@@ -417,7 +422,6 @@ export default function Files() {
                               <View style={{ display: 'flex', flexDirection: 'row', gap: 15, margin: 10, alignItems: 'center' }}>
                                 <Image source={require('../../assets/images/attachment.png')} style={{ width: 16, height: 30 }} />
                                 <Text style={{ fontSize: 18 }}>{record.name}</Text>
-
                               </View>
                             </Pressable>
                           ))}
