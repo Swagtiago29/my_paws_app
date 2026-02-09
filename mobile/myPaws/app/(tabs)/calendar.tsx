@@ -2,7 +2,7 @@ import { useState } from "react";
 import { View, Text, Pressable, FlatList, StyleSheet } from "react-native";
 import { Calendar } from 'react-native-big-calendar'
 import IconButton from "../components/IconButton";
-import { generateWeekSlots } from "../utils/generateEvents";
+import { generateWeekSlots } from "../../utils/generateEvents";
 import { Ionicons } from "@expo/vector-icons";
 
 const DATA = [
@@ -112,6 +112,7 @@ export default function MyCalendar() {
     const [currentDate, setCurrentDate] = useState(new Date());
     const [selectedDate, setSelectedDate] = useState<Date | null>(null);
     const [dayOpen, setDayOpen] = useState(false)
+    const [timeOpen, setTimeOpen] = useState('null')
 
     const goNextMonth = () => {
         const d = new Date(currentDate);
@@ -136,7 +137,7 @@ export default function MyCalendar() {
         text.charAt(0).toUpperCase() + text.slice(1);
 
     return (
-        <View style={{ height: "100%", backgroundColor: 'white' }}>
+        <View style={{ height: "100%", backgroundColor: 'white', display: "flex" }}>
             {dayOpen && (
                 <View style={styles.day_container}>
                     <View style={styles.day_container_header}>
@@ -152,13 +153,16 @@ export default function MyCalendar() {
                         data={DATA}
                         renderItem={({ item }) =>
                             <Pressable style={item.disabled ? styles.item_container_disabled : styles.item_container}
-                                onPress={() => { if (!item.disabled) { console.log(item.id, item.time) } }}>
+                                onPress={() => { if (!item.disabled) {console.log(item.id, item.time); setTimeOpen(item.time)} }}>
                                 <Text style={styles.item_text}>{item.time}
                                 </Text>
                             </Pressable>}>
                     </FlatList>
                 </View>
             )}
+            {timeOpen !== 'null' && (<View style={{ width: '95%',
+                height: '50%', display: 'flex', position: 'absolute',
+                zIndex: 2, backgroundColor: 'white', top: 100, boxShadow: '1px 1px 8px gray', alignSelf: 'center' }}></View>)}
             <View style={styles.nav_buttons}>
                 <IconButton text="Previous Month" icon="chevron-back" onPress={goPrevMonth} direction={"left"} />
                 <IconButton text="Next Month" icon="chevron-forward" onPress={goNextMonth} direction={"right"} />
@@ -186,7 +190,7 @@ export default function MyCalendar() {
 
                     if (pressed < today) {
                         console.log("select a valid day");
-                        return; // ⛔ stop execution
+                        return;
                     }
                     setSelectedDate(date);
                     setDayOpen(true);
@@ -208,7 +212,7 @@ const styles = StyleSheet.create({
         fontWeight: 400
     },
     item_container: {
-        backgroundColor: '#5C9E3F',
+        backgroundColor: '#6bb84b',
         padding: 6,
         margin: 2,
         borderRadius: 6,
@@ -232,13 +236,13 @@ const styles = StyleSheet.create({
     day_container: {
         padding: 10,
         position: "absolute",
-        height: "98%",
+        height: "100%",
         width: "85%",
         backgroundColor: "white",
         zIndex: 1,
-        borderRadius: 8,
-        borderWidth: 2,
-        borderColor: '#5C9E3F'
+        borderRadius: 4,
+        boxShadow: '1px 1px 8px gray',
+        alignSelf: 'center'
     },
     day_container_header: {
         display: 'flex',

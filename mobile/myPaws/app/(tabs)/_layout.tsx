@@ -1,4 +1,4 @@
-import { Tabs } from "expo-router";
+import { router, Tabs } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { View, StyleSheet, Pressable, Image, Text } from "react-native";
 import * as NavigationBar from "expo-navigation-bar";
@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import useOptions from "../../hooks/useOptions"
 import useChat from "../../hooks/useChat";
 import useChatTabs from "../../hooks/useChatTabs";
+import { handleLogout } from "../../auth/authService";
 
 export default function TabsLayout() {
   const { showOptions, handleOptions } = useOptions()
@@ -177,7 +178,7 @@ export default function TabsLayout() {
                   <Text style={{ color: '#FFF', fontSize: 18 }}>Settings</Text>
                 </Pressable>
 
-                <Pressable style={styles.item}>
+                <Pressable style={styles.item} onPress={() => { handleLogout(); router.replace("/(auth)/Login") }}>
                   <Ionicons name="log-out-outline" size={29} color={'#FFF'} />
                   <Text style={{ color: '#FFF', fontSize: 18 }}>Logout</Text>
                 </Pressable>

@@ -1,8 +1,8 @@
 import { StyleSheet, View } from "react-native";
 import MapView, { Marker } from "react-native-maps";
-import { fetchUsersWithCoords } from "../../auth/fetchUsersWithCoords";
+import { fetchUsersWithCoords } from "../../utils/FetchPublicUsersWithCoords";
 import { useEffect, useState } from "react";
-import type { UserWithCoords } from "../../auth/fetchUsersWithCoords";
+import type { UserWithCoords } from "../../utils/FetchPublicUsersWithCoords";
 
 export default function MapScreen() {
 
@@ -33,7 +33,9 @@ export default function MapScreen() {
               latitude: user.coordinates.latitude,
               longitude: user.coordinates.longitude
             }}
-            title={user.clinicName} />
+            title={user.clinicName}
+            description={user.clinicAddress}
+            />
         ))}
       </MapView>
     </View>

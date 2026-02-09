@@ -1,28 +1,28 @@
 import "dotenv/config";
 
-console.log(
-  "ANDROID MAPS KEY:",
-  process.env.EXPO_PUBLIC_GOOGLE_MAPS_ANDROID_KEY
-);
-
 export default {
   expo: {
     name: "myPaws",
     slug: "myPaws",
     version: "1.0.0",
     orientation: "portrait",
-    icon: "./assets/images/icon.png",
+    icon: "./assets/images/paws_logo.png",
     scheme: "mypaws",
     userInterfaceStyle: "automatic",
     newArchEnabled: true,
 
     android: {
+       permissions: [
+        "READ_MEDIA_IMAGES",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE",
+      ],
       package: "com.mypaws.mypawsapp",
       adaptiveIcon: {
         backgroundColor: "#3C6627",
-        foregroundImage: "./assets/images/android-icon-foreground.png",
-        backgroundImage: "./assets/images/android-icon-background.png",
-        monochromeImage: "./assets/images/android-icon-monochrome.png",
+        foregroundImage: "./assets/images/paws_logo_empty.png",
+        backgroundImage: "./assets/images/paws_logo_empty.png",
+        monochromeImage: "./assets/images/paws_logo_empty.png",
       },
       edgeToEdgeEnabled: true,
       predictiveBackGestureEnabled: false,
@@ -40,10 +40,11 @@ export default {
 
     plugins: [
       "expo-router",
+      "expo-file-system",
       [
         "expo-splash-screen",
         {
-          image: "./assets/images/paws_logo_empty.png",
+          image: "./assets/images/paws_logo.png",
           imageWidth: 200,
           resizeMode: "contain",
           backgroundColor: "#ffffff",

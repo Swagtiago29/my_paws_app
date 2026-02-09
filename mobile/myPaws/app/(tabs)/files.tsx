@@ -1,6 +1,10 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
 import { Image, Pressable, Text, View, StyleSheet } from "react-native";
+import { downloadImage } from "../../utils/downoadPermission";
+import { useClientPets } from "../../hooks/useClientPets";
+import { useClient } from "../../context/ClientContext";
+import { pickImageFromLibrary, uploadImageToCloudinary } from "../../utils/petImagePicker";
 
 const PETS = [
   {
@@ -16,38 +20,41 @@ const PETS = [
     illnesses: 'none',
     ownerId: 'owner_Id',
     medication: 'none',
+    notes: 'This cat is generally calm and well-behaved, showing curiosity in familiar environments but some hesitation around new people. It is an indoor-only cat with a normal appetite and regular litter box use. The cat prefers quiet spaces, enjoys resting in warm areas, and may become mildly anxious during veterinary visits. No known allergies or chronic conditions have been reported.',
     records: [
       {
-        name: 'name1',
-        adress: 'https://static.icy-veins.com/images/genshin-impact/characters/nahida.webp'
+        name: 'simba-pata-izquierda-1',
+        adress: 'https://res.cloudinary.com/daw1qkmqz/image/upload/v1770581225/simba-pata-izquierda-1_jq5miv.jpg'
       },
       {
-        name: 'name2',
-        adress: 'https://static.icy-veins.com/images/genshin-impact/characters/nahida.webp'
+        name: 'simba-pata-izquierda-2',
+        adress: 'https://res.cloudinary.com/daw1qkmqz/image/upload/v1770581238/simba-pata-izquierda-2_mpnihh.jpg'
       },
       {
-        name: 'name3',
-        adress: 'https://static.icy-veins.com/images/genshin-impact/characters/nahida.webp'
+        name: 'simba-torax-1',
+        adress: 'https://res.cloudinary.com/daw1qkmqz/image/upload/v1770581246/simba-torax-1_dlalji.jpg'
       },
       {
-        name: 'name4',
-        adress: 'https://static.icy-veins.com/images/genshin-impact/characters/nahida.webp'
+        name: 'simba-torax-2',
+        adress: 'https://res.cloudinary.com/daw1qkmqz/image/upload/v1770581255/simba-torax-2_k9h35h.jpg'
       },
     ],
     vaccines: {
       Rabies: {
         doses: [
-          '20/12/205',
+          '20/12/2025',
           '01/01/2026',
           '15/01/2026'
-        ]
+        ],
+        next_vaccine: `${new Date(new Date().setFullYear(new Date().getFullYear() + 1))}`
       },
       Triple_Feline: {
         doses: [
-          '20/12/205',
+          '20/12/2025',
           '01/01/2026',
           '15/01/2026'
-        ]
+        ],
+        next_vaccine: `${new Date(new Date().setFullYear(new Date().getFullYear() + 2))}`
       }
     },
     consults: [
@@ -147,14 +154,14 @@ const PETS = [
   {
     id: 'rand_id2',
     name: 'Manuela',
-    breed: 'White Maltese Poodle',
+    breed: 'Maltese Poodle',
     animal: 'dog',
     photoUrl: 'none',
     gender: 'Male',
     weight: '3.9Kg',
     age: '1 year',
-    allergies: 'none',
-    illnesses: 'none',
+    allergies: 'Pollen',
+    illnesses: 'Atopic Dermatitis',
     ownerId: 'owner_Id',
     medication: 'none',
     notes: '',
@@ -182,14 +189,16 @@ const PETS = [
           '20/12/2025',
           '01/01/2026',
           '15/01/2026'
-        ]
+        ],
+        next_vaccine: `${new Date(new Date().setFullYear(new Date().getFullYear() + 1))}`
       },
       Triple_Feline: {
         doses: [
           '22/12/2025',
           '03/01/2026',
           '17/01/2026'
-        ]
+        ],
+        next_vaccine: `${new Date(new Date().setFullYear(new Date().getFullYear() + 2))}`
       }
     },
     consults: [
@@ -261,10 +270,32 @@ export default function Files() {
   const [openPetId, setOpenPetId] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState('summary');
   const [onRecordOpen, setOnRecordOpen] = useState<string | null>(null)
+  const [petImages, setPetImages] = useState<Record<string, string>>({});
+  const [uploadingPetId, setUploadingPetId] = useState<string | null>(null);
+  const { client } = useClient();
+
+  const handlePickImage = async (petId: string) => {
+    const localUri = await pickImageFromLibrary();
+    if (!localUri) return;
+
+    setUploadingPetId(petId);
+    const url = await uploadImageToCloudinary(localUri);
+
+    if (url) {
+      setPetImages(prev => ({
+        ...prev,
+        [petId]: url,
+      }));
+    }
+
+    setUploadingPetId(null);
+  };
+
 
   return (
     <>
       {/* IMAGE VIEW */}
+
       {onRecordOpen && (
         <View style={{ backgroundColor: 'black', width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <View style={{ alignSelf: 'flex-end' }}>
@@ -272,10 +303,10 @@ export default function Files() {
               <Ionicons name="close" color={'#fff'} size={30} />
             </Pressable>
           </View>
-          <Image source={{ uri: onRecordOpen }} style={{ width: '100%', height: '90%'}} resizeMode="contain" />
+          <Image source={{ uri: onRecordOpen }} style={{ width: '100%', height: '90%' }} resizeMode="contain" />
           <View style={{ alignSelf: 'flex-end', height: 40 }}>
-            <Pressable onPress={() => setOnRecordOpen(null)}>
-              <Image source={require('../../assets/images/download.png')} style={{height: 25, width: 25}}/>
+            <Pressable onPress={() => { console.log('button press'); downloadImage(onRecordOpen) }}>
+              <Image source={require('../../assets/images/download.png')} style={{ height: 25, width: 25 }} />
             </Pressable>
           </View>
         </View>)}
@@ -297,7 +328,7 @@ export default function Files() {
                 </View>
               </Pressable>
               {isOpen && (
-                <View style={{ height: '92%', backgroundColor: '#C9E7AE', padding: 10, borderBottomLeftRadius: 5, borderBottomRightRadius: 5, display: "flex", justifyContent: 'center', alignItems: 'center' }}>
+                <View style={{ height: '82%', backgroundColor: '#C9E7AE', padding: 10, borderBottomLeftRadius: 5, borderBottomRightRadius: 5, display: "flex", justifyContent: 'center', alignItems: 'center' }}>
                   <View style={{ width: '100%', height: '100%', borderRadius: 5, display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
                     <View style={{ height: '4%', width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
                       {getTabs(pet).map(tab => (
@@ -325,20 +356,22 @@ export default function Files() {
                       {activeTab === 'summary' && (
                         <View style={{ width: '100%', display: 'flex', flexDirection: 'column' }}>
                           <View style={{ width: '100%', display: 'flex', flexDirection: 'row' }}>
-                            <Pressable onPress={() => console.log('switch image')}>
+                            <Pressable onPress={() => { handlePickImage(pet.id) }}>
                               <Image source={require('../../assets/images/dots.png')}
                                 style={{ width: 30, height: 12, position: "absolute", top: 128, left: 110, zIndex: 1, backgroundColor: 'white', borderRadius: 3 }} />
                               <Image
                                 source={
-                                  pet.animal === 'cat'
-                                    ? require('../../assets/images/placeholder-cat.png')
-                                    : require('../../assets/images/placeholder-dog.png')
+                                  petImages[pet.id]
+                                    ? { uri: petImages[pet.id] }
+                                    : pet.animal === 'cat'
+                                      ? require('../../assets/images/placeholder-cat.png')
+                                      : require('../../assets/images/placeholder-dog.png')
                                 }
-                                style={{ width: 150, height: 150, borderRadius: 5 }}
+                                style={{ width: 150, height: 150, borderRadius: 5, boxShadow: '1px 1px 8px gray' }}
                               />
                             </Pressable>
                             <View style={{ marginLeft: 15, display: 'flex', justifyContent: 'space-around' }}>
-                              <View><Text style={{ fontSize: 16, margin: 5 }}>{pet.breed}</Text></View>
+                              <View><Text style={styles.title}>{pet.breed}</Text></View>
                               <View style={styles.summary_list_container}>
                                 <Image source={require('../../assets/images/male.png')} style={{ width: 15, height: 15 }} />
                                 <Text style={{ fontSize: 16, margin: 5 }}>{' •  '}{pet.gender}</Text></View>
@@ -352,20 +385,46 @@ export default function Files() {
                           </View>
                           <View style={{ margin: 8, width: '95%', height: 1, backgroundColor: 'gray' }}></View>
                           <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                            <View style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                              <View style={{ borderRadius: 5, backgroundColor: '#EE2623', padding: 2, display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around', width: '80%' }}>
-                                <Image source={require('../../assets/images/warning.png')} style={{ width: 22, height: 22 }} />
-                                <Text style={{ color: 'white', fontSize: 16 }}>{pet.allergies === 'none' ? 'No Allergies' : pet.allergies}</Text></View>
-                              <View style={{ borderRadius: 5, backgroundColor: '#F19900', padding: 2, display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around', width: '80%' }}>
-                                <Image source={require('../../assets/images/warning.png')} style={{ width: 22, height: 22 }} />
-                                <Text style={{ color: 'white', fontSize: 16 }}>{pet.illnesses === 'none' ? 'No illnesses' : pet.illnesses}</Text></View>
+                            <View style={{ display: 'flex', flexDirection: 'column', gap: 10, marginRight: 20 }}>
+                              <View style={{ borderRadius: 5, backgroundColor: '#EE2623', padding: 2, display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 20, justifyContent: 'flex-start', width: '100%', boxShadow: '1px 1px 8px gray' }}>
+                                <Image source={require('../../assets/images/warning.png')} style={{ width: 22, height: 22, marginLeft: 5 }} />
+                                <Text style={{ color: 'white', fontSize: 15, }}>{pet.allergies === 'none' ? 'No Allergies' : pet.allergies}</Text></View>
+                              <View style={{ borderRadius: 5, backgroundColor: '#F19900', padding: 2, display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 20, justifyContent: 'flex-start', width: '100%', marginRight: 15, boxShadow: '1px 1px 8px gray' }}>
+                                <Image source={require('../../assets/images/warning.png')} style={{ width: 22, height: 22, marginLeft: 5 }} />
+                                <Text style={{ color: 'white', fontSize: 15 }}>{pet.illnesses === 'none' ? 'No illnesses' : pet.illnesses}</Text></View>
                             </View>
                             <View style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                              <Text style={{ fontSize: 16, margin: 5 }}>{pet.ownerId}</Text>
+                              <Text style={{ fontSize: 16, margin: 5 }}>{client?.fullName}</Text>
                               <View style={styles.summary_list_container}>
                                 <Image source={require('../../assets/images/call.png')} style={{ width: 15, height: 15 }} />
-                                <Text style={{ fontSize: 16, margin: 5 }}>{' •  '}{pet.ownerId}</Text>
+                                <Text style={{ fontSize: 16, margin: 5 }}>{' •  '}{client?.phone}</Text>
                               </View>
+                            </View>
+                          </View>
+                          <View style={{ margin: 8, width: '95%', height: 1, backgroundColor: 'gray' }}></View>
+                          <View style={{ borderRadius: 5, backgroundColor: '#5EA6DA', padding: 2, display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', width: '100%', boxShadow: '1px 1px 8px gray' }}>
+                            <Image source={require('../../assets/images/pills.png')} style={{ width: 25, height: 22, marginLeft: 20 }} />
+                            <Text style={{ color: 'white', fontSize: 16 }}>{pet.medication === 'none' ? 'No Medications' : pet.medication}</Text>
+                            <Ionicons name="chevron-down" color={'#FFF'} size={25} style={{ marginRight: 10 }} />
+                          </View>
+                          <View style={{ margin: 8, width: '95%', height: 1, backgroundColor: 'gray' }}></View>
+                          <View style={{ display: "flex", justifyContent: 'center', alignItems: 'center', width: '100%', margin: 5, flexDirection: 'column' }}>
+                            <Text style={styles.title}>Next Vaccines</Text>
+                            <View style={{ width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'space-around' }}>
+                              {Object.entries(pet.vaccines ?? {}).map(([vaccineName, vaccine]) => (
+                                <View key={vaccineName} style={{ display: 'flex', alignItems: 'center' }}>
+                                  <Text style={{ fontSize: 16, margin: 5 }}>
+                                    {vaccineName}
+                                  </Text>
+                                  <Image source={require('../../assets/images/tick.png')} style={{ width: 50, height: 50 }} />
+                                  <Text>
+                                    next in {Math.ceil(
+                                      (new Date(vaccine.next_vaccine).getTime() - Date.now()) /
+                                      (1000 * 60 * 60 * 24)
+                                    )} days
+                                  </Text>
+                                </View>
+                              ))}
                             </View>
                           </View>
                         </View>
@@ -428,6 +487,14 @@ export default function Files() {
                         </View>
                       )}
 
+                      {/* NOTES TAB */}
+
+                      {activeTab === 'notes' && (
+                        <View style={{ width: '100%', display: 'flex', flexDirection: 'column', padding: 5 }}>
+                          <Text style={{ fontSize: 17, padding: 5 }}>{pet.notes}</Text>
+                        </View>
+                      )}
+
                     </View>
                   </View>
                 </View>)}
@@ -482,6 +549,9 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center'
+  },
+  title: {
+    fontSize: 17,
+    fontWeight: 500
   }
-
 })

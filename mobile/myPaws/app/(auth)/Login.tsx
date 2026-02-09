@@ -1,10 +1,48 @@
-import { View, Text, TextInput, Pressable, StyleSheet, Image, KeyboardAvoidingView, ScrollView, Platform, } from "react-native";
+import {
+    View,
+    Text,
+    TextInput,
+    Pressable,
+    StyleSheet,
+    Image,
+    KeyboardAvoidingView,
+    ScrollView,
+    Platform,
+    Alert,
+    ActivityIndicator,
+} from "react-native";
 import { useRouter } from "expo-router";
-import { replace } from "expo-router/build/global-state/routing";
+import { useState } from "react";
+import { handleLogin } from "../../auth/authService";
 
 export default function Login() {
     const router = useRouter();
 
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [loading, setLoading] = useState(false);
+
+    const onLoginPress = async () => {
+        try {
+            setLoading(true);
+
+            await handleLogin(email, password);
+
+            router.replace("/(tabs)/home");
+        } catch (error: any) {
+            let message = "Login failed.";
+
+            if (error.message === "Missing credentials") {
+                message = "Please enter email and password.";
+            } else if (error.code === "auth/invalid-credential") {
+                message = "Invalid email or password.";
+            }
+
+            Alert.alert("Error", message);
+        } finally {
+            setLoading(false);
+        }
+    };
     return (
         <KeyboardAvoidingView
             style={{ flex: 1 }}
@@ -24,11 +62,13 @@ export default function Login() {
                         MY PAWS
                     </Text>
                     <TextInput
-                        placeholder="Email or Client Number"
+                        placeholder="Email"
                         placeholderTextColor="#999"
                         style={styles.input}
                         autoCapitalize="none"
                         keyboardType="email-address"
+                        value={email}
+                        onChangeText={setEmail}
                     />
 
                     <TextInput
@@ -36,10 +76,20 @@ export default function Login() {
                         placeholderTextColor="#999"
                         style={styles.input}
                         secureTextEntry
+                        value={password}
+                        onChangeText={setPassword}
                     />
 
-                    <Pressable style={styles.button} onPress={()=> replace('/(auth)/FirstLogin')}>
-                        <Text style={styles.buttonText}>Log in</Text>
+                    <Pressable
+                        style={[styles.button, loading && { opacity: 0.7 }]}
+                        onPress={onLoginPress}
+                        disabled={loading}
+                    >
+                        {loading ? (
+                            <ActivityIndicator color="white" />
+                        ) : (
+                            <Text style={styles.buttonText}>Log in</Text>
+                        )}
                     </Pressable>
 
                     <View
@@ -53,23 +103,20 @@ export default function Login() {
                     <Pressable onPress={() => router.replace('/(auth)/SignUp')}>
                         <Text style={styles.link}>Create an account</Text>
                     </Pressable>
-                    <View style={styles.bottomContainer}>
-                        <Pressable onPress={() => router.push('/BottomInfo')}>
-                            <Text style={styles.bottomLinks}>
-                                PRIVACY POLICY
-                            </Text>
-                        </Pressable>
-                        <Pressable onPress={() => router.push('/BottomInfo')}>
-                            <Text style={styles.bottomLinks}>
-                                JOIN US
-                            </Text>
-                        </Pressable>
-                        <Pressable onPress={() => router.push('/BottomInfo')}>
-                            <Text style={styles.bottomLinks}>
-                                INFORMATION
-                            </Text>
-                        </Pressable>
-                    </View>
+
+                    <Pressable style={styles.bottomContainer} onPress={() => router.push('/BottomInfo')}>
+                        <Text style={styles.bottomLinks}>
+                            PRIVACY POLICY
+                        </Text>
+                        <Text style={styles.bottomLinks}>
+                            JOIN US
+                        </Text>
+                        <Text style={styles.bottomLinks}>
+                            INFORMATION
+                        </Text>
+                    </Pressable>
+
+
                 </View>
             </ScrollView>
         </KeyboardAvoidingView >
